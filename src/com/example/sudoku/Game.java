@@ -1,10 +1,16 @@
 package com.example.sudoku;
 
+
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class Game extends Activity {
@@ -26,6 +32,23 @@ public class Game extends Activity {
 
 	private PuzzleView puzzleView;
 
+	/*Bluetooth Attributes
+	 */
+	// Message types sent from the BluetoothChatService Handler
+    public static final int MESSAGE_STATE_CHANGE = 1;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_WRITE = 3;
+    public static final int MESSAGE_DEVICE_NAME = 4;
+    public static final int MESSAGE_TOAST = 5;
+
+    // Key names received from the BluetoothChatService Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
 	// private SharedPreferences preferences;
 
 	@Override
@@ -186,5 +209,34 @@ public class Game extends Activity {
 			solving_tiles = 50;
 
 	}
+	   @Override
+	    public boolean onCreateOptionsMenu(Menu menu) {
+	        MenuInflater inflater = getMenuInflater();
+	        inflater.inflate(R.menu.option_menu, menu);
+	        return true;
+	    }
+
+	    //done
+	    @Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	        Intent serverIntent = null;
+	        switch (item.getItemId()) {
+	        case R.id.secure_connect_scan:
+	            // Launch the DeviceListActivity to see devices and do scan
+	            serverIntent = new Intent(this, DeviceListActivity.class);
+	            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+	            return true;
+	        case R.id.insecure_connect_scan:
+	            // Launch the DeviceListActivity to see devices and do scan
+	            serverIntent = new Intent(this, DeviceListActivity.class);
+	            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+	            return true;
+	        case R.id.discoverable:
+	            // Ensure this device is discoverable by others
+//	            ensureDiscoverable();
+	            return true;
+	        }
+	        return false;
+	    }
 
 }
