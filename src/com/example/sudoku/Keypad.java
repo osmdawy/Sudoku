@@ -8,17 +8,18 @@ import android.view.View;
 
 public class Keypad extends Dialog {
 	protected static final String TAG = "Sudoku";
-
+	int x;
+	int y;
 	private final View keys[] = new View[9];
 	private View keypad;
 
-	private final int useds[];
 	private final PuzzleView puzzleView;
 
-	public Keypad(Context context, int useds[], PuzzleView puzzleView) {
+	public Keypad(Context context,int x , int y, PuzzleView puzzleView) {
 		super(context);
-		this.useds = useds;
 		this.puzzleView = puzzleView;
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
@@ -28,10 +29,6 @@ public class Keypad extends Dialog {
 		setTitle(R.string.keypad_title);
 		setContentView(R.layout.keypad);
 		findViews();
-		for (int element : useds) {
-			if (element != 0)
-				keys[element - 1].setVisibility(View.INVISIBLE);
-		}
 		setListeners();
 	}
 
@@ -89,11 +86,7 @@ public class Keypad extends Dialog {
 	}
 
 	private boolean isValid(int tile) {
-		for (int t : useds) {
-			if (tile == t)
-				return false;
-		}
-		return true;
+		return Game.isvalid(x, y, tile);
 	}
 
 	private void returnResult(int tile) {
