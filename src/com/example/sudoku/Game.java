@@ -36,6 +36,7 @@ public class Game extends Activity {
 
 	private PuzzleView puzzleView;
 
+	boolean initialized = false;
 	/*
 	 * Bluetooth Attributes
 	 */
@@ -65,9 +66,11 @@ public class Game extends Activity {
 	private String mConnectedDeviceName = null;
 	// String buffer for outgoing messages
 	private StringBuffer mOutStringBuffer;
+
+	int score = 0;
+	int oppScore = 0;
 	
-	int score=0;
-	int oppScore=0;
+	boolean admin=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -236,17 +239,17 @@ public class Game extends Activity {
 	protected boolean setTileIfValid(int x, int y, int value) {
 		if (isvalid(x, y, value)) {
 			score++;
-			puzzleView.score=score;
+			puzzleView.score = score;
 			puzzleView.invalidate();
 			setTile(x, y, value);
 			Log.d("puzzle", toPuzzleString(puzzle));
-			
+
 			return true;
-		} else{
+		} else {
 			score--;
-			puzzleView.score=score;
+			puzzleView.score = score;
 			puzzleView.invalidate();
-			String scoremsg = "s "+score;
+			String scoremsg = "s " + score;
 			sendMessage(scoremsg);
 			return false;
 		}
@@ -305,33 +308,33 @@ public class Game extends Activity {
 		// put original array
 		msg = msg + toPuzzleString(originalPuzzle);
 
-		//score
-		msg=msg+" "+score;
+		// score
+		msg = msg + " " + score;
 		return msg;
 	}
 
 	private void decodeMsgReceieved(String msg) {
 
-		if(msg.charAt(0)=='s'){
-		
-			Log.d("Score",msg);
-			String oppScoreS = msg.substring(2,msg.length());
-			oppScore=Integer.parseInt(oppScoreS);
-			puzzleView.score=score;
-			puzzleView.oppScore=oppScore;
-		}else{
-		String[] result = msg.split(" ");
-		puzzle = fromPuzzleString(result[0]);
-		String array = result[1];
-		int[] array1 = fromPuzzleString(array);
+		if (msg.charAt(0) == 's') {
 
-		arr = convert1Darrayto2D(array1);
-		originalPuzzle = fromPuzzleString(result[2]);
+			Log.d("Score", msg);
+			String oppScoreS = msg.substring(2, msg.length());
+			oppScore = Integer.parseInt(oppScoreS);
+			puzzleView.score = score;
+			puzzleView.oppScore = oppScore;
+		} else {
+			String[] result = msg.split(" ");
+			puzzle = fromPuzzleString(result[0]);
+			String array = result[1];
+			int[] array1 = fromPuzzleString(array);
 
-		oppScore=Integer.parseInt(result[3]);
-		Log.d("OppS",oppScore+"");
-		puzzleView.oppScore=oppScore;
-		puzzleView.invalidate();
+			arr = convert1Darrayto2D(array1);
+			originalPuzzle = fromPuzzleString(result[2]);
+
+			oppScore = Integer.parseInt(result[3]);
+			Log.d("OppS", oppScore + "");
+			puzzleView.oppScore = oppScore;
+			puzzleView.invalidate();
 		}
 	}
 
@@ -401,11 +404,14 @@ public class Game extends Activity {
 		Intent serverIntent = null;
 		switch (item.getItemId()) {
 		case R.id.secure_connect_scan:
+			admin=true;
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+			
 			return true;
 		case R.id.insecure_connect_scan:
+			admin=true;
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent,
@@ -477,6 +483,16 @@ public class Game extends Activity {
 					// mTitle.setText(R.string.title_connected_to);
 					// mTitle.append(mConnectedDeviceName);
 					// mConversationArrayAdapter.clear();
+					if (!initialized && admin) {
+
+						// sendMessage(encodeMsgToSend());
+						mChatService.write(encodeMsgToSend().getBytes());
+
+						// Reset out string buffer to zero and clear the edit
+						// text field
+						mOutStringBuffer.setLength(0);
+						initialized = true;
+					}
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					// mTitle.setText(R.string.title_connecting);
@@ -510,9 +526,8 @@ public class Game extends Activity {
 				Toast.makeText(getApplicationContext(),
 						"Connected to " + mConnectedDeviceName,
 						Toast.LENGTH_SHORT).show();
-				puzzleView.oppDeviceName=mConnectedDeviceName;
-				
-				
+				puzzleView.oppDeviceName = mConnectedDeviceName;
+
 				break;
 			case MESSAGE_TOAST:
 				Toast.makeText(getApplicationContext(),
