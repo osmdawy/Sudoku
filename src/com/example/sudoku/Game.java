@@ -235,15 +235,17 @@ public class Game extends Activity {
 
 	protected boolean setTileIfValid(int x, int y, int value) {
 		if (isvalid(x, y, value)) {
-			setTile(x, y, value);
-			Log.d("puzzle", toPuzzleString(puzzle));
 			score++;
 			puzzleView.score=score;
-			String scoremsg = "s "+score;
-			sendMessage(scoremsg);
+			puzzleView.invalidate();
+			setTile(x, y, value);
+			Log.d("puzzle", toPuzzleString(puzzle));
+			
 			return true;
 		} else{
 			score--;
+			puzzleView.score=score;
+			puzzleView.invalidate();
 			String scoremsg = "s "+score;
 			sendMessage(scoremsg);
 			return false;
@@ -303,6 +305,8 @@ public class Game extends Activity {
 		// put original array
 		msg = msg + toPuzzleString(originalPuzzle);
 
+		//score
+		msg=msg+" "+score;
 		return msg;
 	}
 
@@ -310,9 +314,9 @@ public class Game extends Activity {
 
 		if(msg.charAt(0)=='s'){
 		
+			Log.d("Score",msg);
 			String oppScoreS = msg.substring(2,msg.length());
 			oppScore=Integer.parseInt(oppScoreS);
-			
 			puzzleView.score=score;
 			puzzleView.oppScore=oppScore;
 		}else{
@@ -324,6 +328,10 @@ public class Game extends Activity {
 		arr = convert1Darrayto2D(array1);
 		originalPuzzle = fromPuzzleString(result[2]);
 
+		oppScore=Integer.parseInt(result[3]);
+		Log.d("OppS",oppScore+"");
+		puzzleView.oppScore=oppScore;
+		puzzleView.invalidate();
 		}
 	}
 
