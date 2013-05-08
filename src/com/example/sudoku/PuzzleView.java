@@ -1,5 +1,9 @@
 package com.example.sudoku;
 
+
+
+
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -32,6 +36,9 @@ public class PuzzleView extends View {
 	private int selY;
 	private final Rect selRect = new Rect();
 	
+	int score=0;
+	int oppScore=0;
+	String oppDeviceName="Opponent";
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		h=h-scoreOffset;
@@ -121,6 +128,7 @@ public class PuzzleView extends View {
 			}
 		}
 		
+		
 		// Draw the hints
 		// Pick a hint color based on #moves left
 //		Paint hint = new Paint();
@@ -143,10 +151,27 @@ public class PuzzleView extends View {
 		Paint selected = new Paint();
 		selected.setColor(getResources().getColor(R.color.puzzle_selected));
 		canvas.drawRect(selRect, selected);
+		//draw score
+		Paint scorePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		scorePaint.setColor(R.color.puzzle_dark);
+		scorePaint.setStyle(Style.FILL);
+		scorePaint.setTextSize(getHeight() / 5f);
+		scorePaint.setTextScaleX(getWidth() / getHeight());
+		scorePaint.setTextAlign(Paint.Align.CENTER);
+		canvas.drawText(
+				"My Score: "
+						+ score
+						+ " |"
+						+ oppDeviceName+": "
+						+ oppScore
+						
+						,
+				width * 3 / 2, getHeight() - scoreOffset + 90, dark);
 		}else{
 			   Toast.makeText(getContext(), "You win",
                        Toast.LENGTH_SHORT).show();	
 		}
+		
 		
 	}
 
