@@ -1,6 +1,5 @@
 package com.example.sudoku;
 
-//Created by <<<<<Farsim & Hasib>>>>> ;
 
 import java.util.*;//for random number
 
