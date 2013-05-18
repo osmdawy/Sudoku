@@ -1,42 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="@color/background"
-    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="30dip"
-    >
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_height="wrap_content"
-		android:layout_width="fill_parent"
-		android:layout_gravity="center">
-		<TextView
-		    android:layout_width="wrap_content" 
-		    android:layout_height="wrap_content" 
-		    android:text="@string/main_title" 
-		    android:layout_gravity="center"
-		    android:layout_marginBottom="25dip"
-		    android:textSize="24.5sp" />
-		<Button
-			android:id="@+id/continue_button"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/continue_label" />
-		<Button
-			android:id="@+id/new_button"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/new_game_label" />
-		<Button
-			android:id="@+id/about_button"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/about_label" />
-		<Button
-			android:id="@+id/exit_button"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/exit_label" />
-	</LinearLayout>
+    android:background="@color/background"
+    android:orientation="horizontal"
+    android:padding="30dip" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="322dp"
+        android:layout_weight="0.58"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="25dip"
+            android:text="@string/main_title"
+            android:textSize="24.5sp" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Rounds"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="2" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/new_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_game_label" />
+
+        <Button
+            android:id="@+id/about_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_label" />
+
+        <Button
+            android:id="@+id/exit_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/exit_label" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -4,8 +4,12 @@ package com.example.sudoku;
 
 
 
+import java.util.Currency;
+
+import android.R.color;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -22,7 +26,7 @@ public class PuzzleView extends View {
 	private static final String TAG = "Sudoku";
 	private final Game game;
 	public static final int scoreOffset = 100;
-	
+	public int noOfRounds;
 	public PuzzleView(Context context) {
 		super(context);
 		this.game = (Game) context;
@@ -54,10 +58,12 @@ public class PuzzleView extends View {
 	private void getRect(int x, int y, Rect rect) {
 		rect.set((int) (x * width), (int) (y * height), (int) (x * width + width), (int) (y * height + height));
 	}
+	
 
-	@SuppressLint("DrawAllocation")
+	@SuppressLint({ "DrawAllocation", "ResourceAsColor" })
 	@Override
 	protected void onDraw(Canvas canvas) {
+		
 		// Draw the background
 		Log.d("solving tiles",Game.solving_tiles+"");
 		if(Game.solving_tiles!=0){
@@ -153,23 +159,45 @@ public class PuzzleView extends View {
 		canvas.drawRect(selRect, selected);
 		//draw score
 		Paint scorePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		scorePaint.setColor(R.color.puzzle_dark);
+		scorePaint.setColor(getResources().getColor(R.color.puzzle_foreground));
 		scorePaint.setStyle(Style.FILL);
-		scorePaint.setTextSize(getHeight() / 5f);
-		scorePaint.setTextScaleX(getWidth() / getHeight());
+		scorePaint.setTextSize(height/2f);
+		scorePaint.setStrokeWidth(3);
+		scorePaint.setTextScaleX(width/ height);
+		scorePaint.setTextAlign(Paint.Align.CENTER);
+		canvas.drawText(
+				"Number of rounds left: "
+						+ game.noOfRounds
+						,
+				width+100, getHeight() - scoreOffset + 30, scorePaint);
+		
 		scorePaint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawText(
 				"My Score: "
 						+ score
-						+ " |"
-						+ oppDeviceName+": "
+						,
+				width+90, getHeight() - scoreOffset + 60, scorePaint);
+		canvas.drawText(
+				
+						 oppDeviceName+" score: "
 						+ oppScore
 						
 						,
-				width * 3 / 2, getHeight() - scoreOffset + 90, dark);
+				width+90, getHeight() - scoreOffset + 90, scorePaint);
 		}else{
-			   Toast.makeText(getContext(), "You win",
+			if(noOfRounds==1){
+			if(score>oppScore){
+			   Toast.makeText(getContext(), "You Won",
                        Toast.LENGTH_SHORT).show();	
+			}else if(oppScore>score){
+				 Toast.makeText(getContext(), "You Lost",
+	                       Toast.LENGTH_SHORT).show();	
+			}else{
+				 Toast.makeText(getContext(), "Tie",
+	                       Toast.LENGTH_SHORT).show();	
+				
+			}
+		}
 		}
 		
 		

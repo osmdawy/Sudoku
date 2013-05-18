@@ -13,156 +13,175 @@ public final class R {
         public static final int shake=0x7f040001;
     }
     public static final class array {
-        public static final int difficulty=0x7f060000;
+        public static final int difficulty=0x7f070000;
     }
     public static final class attr {
     }
     public static final class color {
-        public static final int background=0x7f070000;
-        public static final int color=0x7f07000a;
-        public static final int puzzle_background=0x7f070001;
-        public static final int puzzle_dark=0x7f070004;
-        public static final int puzzle_foreground=0x7f070005;
-        public static final int puzzle_hilite=0x7f070002;
-        public static final int puzzle_hint_0=0x7f070006;
-        public static final int puzzle_hint_1=0x7f070007;
-        public static final int puzzle_hint_2=0x7f070008;
-        public static final int puzzle_light=0x7f070003;
-        public static final int puzzle_selected=0x7f070009;
+        public static final int background=0x7f080000;
+        public static final int color=0x7f08000a;
+        public static final int puzzle_background=0x7f080001;
+        public static final int puzzle_dark=0x7f080004;
+        public static final int puzzle_foreground=0x7f080005;
+        public static final int puzzle_hilite=0x7f080002;
+        public static final int puzzle_hint_0=0x7f080006;
+        public static final int puzzle_hint_1=0x7f080007;
+        public static final int puzzle_hint_2=0x7f080008;
+        public static final int puzzle_light=0x7f080003;
+        public static final int puzzle_selected=0x7f080009;
     }
     public static final class drawable {
         public static final int ic_app=0x7f020000;
         public static final int icon=0x7f020001;
+        public static final int opensudoku_logo_72=0x7f020002;
+        public static final int sudokugame=0x7f020003;
     }
     public static final class id {
-        public static final int about_button=0x7f0a001c;
-        public static final int about_content=0x7f0a0000;
-        public static final int button_post=0x7f0a0007;
-        public static final int button_post_image=0x7f0a0008;
-        public static final int button_scan=0x7f0a000f;
-        public static final int button_share_facebook=0x7f0a0009;
-        public static final int button_share_twitter=0x7f0a000a;
-        public static final int continue_button=0x7f0a001a;
-        public static final int discoverable=0x7f0a0022;
-        public static final int exit_button=0x7f0a001d;
-        public static final int fb_thumb=0x7f0a0004;
-        public static final int insecure_connect_scan=0x7f0a0021;
-        public static final int item_logout=0x7f0a001f;
-        public static final int keypad=0x7f0a0010;
-        public static final int keypad_1=0x7f0a0011;
-        public static final int keypad_2=0x7f0a0012;
-        public static final int keypad_3=0x7f0a0013;
-        public static final int keypad_4=0x7f0a0014;
-        public static final int keypad_5=0x7f0a0015;
-        public static final int keypad_6=0x7f0a0016;
-        public static final int keypad_7=0x7f0a0017;
-        public static final int keypad_8=0x7f0a0018;
-        public static final int keypad_9=0x7f0a0019;
-        public static final int link_description=0x7f0a0006;
-        public static final int link_name=0x7f0a0005;
-        public static final int message=0x7f0a0002;
-        public static final int message_addition=0x7f0a0003;
-        public static final int new_button=0x7f0a001b;
-        public static final int new_devices=0x7f0a000e;
-        public static final int paired_devices=0x7f0a000c;
-        public static final int secure_connect_scan=0x7f0a0020;
-        public static final int settings=0x7f0a001e;
-        public static final int title_message=0x7f0a0001;
-        public static final int title_new_devices=0x7f0a000d;
-        public static final int title_paired_devices=0x7f0a000b;
+        public static final int Button01=0x7f0b000b;
+        public static final int about_button=0x7f0b0021;
+        public static final int about_content=0x7f0b0000;
+        public static final int button_post=0x7f0b0007;
+        public static final int button_post_image=0x7f0b0008;
+        public static final int button_scan=0x7f0b0012;
+        public static final int button_share_facebook=0x7f0b000a;
+        public static final int button_share_twitter=0x7f0b0009;
+        public static final int continue_button=0x7f0b0023;
+        public static final int discoverable=0x7f0b0028;
+        public static final int editText1=0x7f0b001f;
+        public static final int exit_button=0x7f0b0022;
+        public static final int fb_thumb=0x7f0b0004;
+        public static final int imageView1=0x7f0b0013;
+        public static final int insecure_connect_scan=0x7f0b0027;
+        public static final int item_logout=0x7f0b0025;
+        public static final int keypad=0x7f0b0014;
+        public static final int keypad_1=0x7f0b0015;
+        public static final int keypad_2=0x7f0b0016;
+        public static final int keypad_3=0x7f0b0017;
+        public static final int keypad_4=0x7f0b0018;
+        public static final int keypad_5=0x7f0b0019;
+        public static final int keypad_6=0x7f0b001a;
+        public static final int keypad_7=0x7f0b001b;
+        public static final int keypad_8=0x7f0b001c;
+        public static final int keypad_9=0x7f0b001d;
+        public static final int link_description=0x7f0b0006;
+        public static final int link_name=0x7f0b0005;
+        public static final int message=0x7f0b0002;
+        public static final int message_addition=0x7f0b0003;
+        public static final int new_button=0x7f0b0020;
+        public static final int new_devices=0x7f0b0011;
+        public static final int paired_devices=0x7f0b000f;
+        public static final int secure_connect_scan=0x7f0b0026;
+        public static final int settings=0x7f0b0024;
+        public static final int textView1=0x7f0b001e;
+        public static final int title_left_text=0x7f0b000c;
+        public static final int title_message=0x7f0b0001;
+        public static final int title_new_devices=0x7f0b0010;
+        public static final int title_paired_devices=0x7f0b000e;
+        public static final int title_right_text=0x7f0b000d;
     }
     public static final class layout {
         public static final int about=0x7f030000;
         public static final int ac_facebook=0x7f030001;
         public static final int ac_home=0x7f030002;
         public static final int ac_twitter=0x7f030003;
-        public static final int device_list=0x7f030004;
-        public static final int device_name=0x7f030005;
-        public static final int keypad=0x7f030006;
-        public static final int main=0x7f030007;
+        public static final int custom_title=0x7f030004;
+        public static final int device_list=0x7f030005;
+        public static final int device_name=0x7f030006;
+        public static final int home=0x7f030007;
+        public static final int keypad=0x7f030008;
+        public static final int main=0x7f030009;
     }
     public static final class menu {
-        public static final int menu=0x7f090000;
-        public static final int menu_facebook_twitter=0x7f090001;
-        public static final int option_menu=0x7f090002;
+        public static final int menu=0x7f0a0000;
+        public static final int menu_facebook_twitter=0x7f0a0001;
+        public static final int option_menu=0x7f0a0002;
+    }
+    public static final class raw {
+        public static final int doh=0x7f060000;
+        public static final int finish=0x7f060001;
+        public static final int hurry=0x7f060002;
+        public static final int lose=0x7f060003;
+        public static final int pcmouseclick1=0x7f060004;
+        public static final int round=0x7f060005;
+        public static final int win=0x7f060006;
     }
     public static final class string {
-        public static final int Player1Score=0x7f080018;
-        public static final int Player2Score=0x7f080019;
-        public static final int about_label=0x7f080005;
-        public static final int about_text=0x7f080008;
+        public static final int Player1Score=0x7f090017;
+        public static final int Player2Score=0x7f090018;
+        public static final int about_label=0x7f090004;
+        public static final int about_text=0x7f090007;
         /**  About Screen 
          */
-        public static final int about_title=0x7f080007;
-        public static final int app_name=0x7f080001;
-        public static final int button_facebook_post=0x7f080028;
-        public static final int button_facebook_post_image=0x7f080029;
-        public static final int button_scan=0x7f080034;
-        public static final int button_share_facebook=0x7f08002b;
-        public static final int button_share_twitter=0x7f08002c;
-        public static final int button_twitter_post=0x7f08002a;
-        public static final int continue_label=0x7f080003;
-        public static final int discoverable=0x7f080037;
-        public static final int easy_label=0x7f080011;
-        public static final int exit_label=0x7f080006;
-        public static final int facebook_logged_out=0x7f080021;
-        public static final int facebook_post_published=0x7f08001f;
-        public static final int facebook_post_publishing_failed=0x7f080020;
+        public static final int about_title=0x7f090006;
+        public static final int app_name=0x7f09001b;
+        public static final int button_facebook_post=0x7f090028;
+        public static final int button_facebook_post_image=0x7f090029;
+        public static final int button_scan=0x7f090034;
+        public static final int button_share_facebook=0x7f09002b;
+        public static final int button_share_twitter=0x7f09002c;
+        public static final int button_twitter_post=0x7f09002a;
+        public static final int continue_label=0x7f090002;
+        public static final int discoverable=0x7f090037;
+        public static final int easy_label=0x7f090010;
+        public static final int exit_label=0x7f090005;
+        public static final int facebook_logged_out=0x7f090021;
+        public static final int facebook_post_published=0x7f09001f;
+        public static final int facebook_post_publishing_failed=0x7f090020;
         /**  Game 
          */
-        public static final int game_title=0x7f080014;
-        public static final int hard_label=0x7f080013;
-        public static final int hello=0x7f080000;
-        public static final int hints_summary=0x7f08000f;
-        public static final int hints_title=0x7f08000e;
-        public static final int insecure_connect=0x7f080036;
-        public static final int keypad_title=0x7f080016;
-        public static final int main_title=0x7f080002;
-        public static final int medium_label=0x7f080012;
-        public static final int menu_logout=0x7f08002d;
-        public static final int music_summary=0x7f08000d;
-        public static final int music_title=0x7f08000c;
+        public static final int game_title=0x7f090013;
+        public static final int hard_label=0x7f090012;
+        public static final int hello=0x7f090000;
+        public static final int hints_summary=0x7f09000e;
+        public static final int hints_title=0x7f09000d;
+        public static final int insecure_connect=0x7f090036;
+        public static final int keypad_title=0x7f090015;
+        public static final int main_title=0x7f090001;
+        public static final int medium_label=0x7f090011;
+        public static final int menu_logout=0x7f09002d;
+        public static final int music_summary=0x7f09000c;
+        public static final int music_title=0x7f09000b;
         /**  Preferences 
          */
-        public static final int myPreference=0x7f080017;
-        public static final int new_game_label=0x7f080004;
+        public static final int myPreference=0x7f090016;
+        public static final int new_game_label=0x7f090003;
         /**  New Game 
          */
-        public static final int new_game_title=0x7f080010;
-        public static final int no_moves_label=0x7f080015;
-        public static final int none_found=0x7f080031;
-        public static final int none_paired=0x7f080030;
-        public static final int puzzle=0x7f08001a;
+        public static final int new_game_title=0x7f09000f;
+        public static final int no_moves_label=0x7f090014;
+        public static final int none_found=0x7f090031;
+        public static final int none_paired=0x7f090030;
+        public static final int puzzle=0x7f090019;
         /**   DeviceListActivity 
          */
-        public static final int scanning=0x7f08002e;
+        public static final int scanning=0x7f09002e;
         /**  Options Menu 
          */
-        public static final int secure_connect=0x7f080035;
-        public static final int select_device=0x7f08002f;
+        public static final int secure_connect=0x7f090035;
+        public static final int select_device=0x7f09002f;
         /**  Settings Screen 
          */
-        public static final int settings_label=0x7f080009;
-        public static final int settings_shortcut=0x7f08000b;
-        public static final int settings_title=0x7f08000a;
+        public static final int settings_label=0x7f090008;
+        public static final int settings_shortcut=0x7f09000a;
+        public static final int settings_title=0x7f090009;
         /**  Text and labels 
          */
-        public static final int share_message_title=0x7f080027;
-        public static final int solution=0x7f08001b;
-        public static final int text_home=0x7f08001c;
-        public static final int title_other_devices=0x7f080033;
-        public static final int title_paired_devices=0x7f080032;
-        public static final int toast_facebook_auth_fail=0x7f08001e;
+        public static final int share_message_title=0x7f090027;
+        public static final int solution=0x7f09001a;
+        public static final int text_home=0x7f09001c;
+        public static final int title_other_devices=0x7f090033;
+        public static final int title_paired_devices=0x7f090032;
+        public static final int toast_facebook_auth_fail=0x7f09001e;
         /**  Facebook events 
          */
-        public static final int toast_facebook_auth_success=0x7f08001d;
-        public static final int toast_twitter_auth_fail=0x7f080023;
+        public static final int toast_facebook_auth_success=0x7f09001d;
+        public static final int toast_twitter_auth_fail=0x7f090023;
         /**  Twitter events 
          */
-        public static final int toast_twitter_auth_success=0x7f080022;
-        public static final int twitter_logged_out=0x7f080026;
-        public static final int twitter_post_published=0x7f080024;
-        public static final int twitter_post_publishing_failed=0x7f080025;
+        public static final int toast_twitter_auth_success=0x7f090022;
+        public static final int twitter_logged_out=0x7f090026;
+        public static final int twitter_post_published=0x7f090024;
+        public static final int twitter_post_publishing_failed=0x7f090025;
     }
     public static final class xml {
         public static final int settings=0x7f050000;

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, Sudoku!</string>
-    <string name="app_name">Sudoku</string>
     <string name="main_title">Android Sudoku</string>
     <string name="continue_label">Continue</string>
     <string name="new_game_label">New Game</string>
@@ -17,6 +16,7 @@ objective is to fill the grid so that each
 row, each column, and each of the 3x3 boxes
 (also called <i>blocks</i>) contains the digits
 1 to 9 exactly once.
+You have 1 minute to solve easy game , 10 minutes to solve meduim one and 15 minutes to solve hard.
 	</string>
 
 	<!-- Settings Screen -->
@@ -45,8 +45,8 @@ row, each column, and each of the 3x3 boxes
     <string name="Player2Score">Player 2 score</string>
      <string name="puzzle">initial puzzle</string>
      <string name="solution">solution</string>
-        <string name="app_name">SocialSharing</string>
-    <string name="text_home">This is just example of using <b>Simple Social Sharing</b> project\n\nYou can see right design of sharing here - <a href="">http://www.androidpatterns.com/uap_pattern/share-button</a></string>
+        <string name="app_name">Multiplayer Sudoku</string>
+    <string name="text_home">Share score with your friends :-)</string>
     <!-- Facebook events -->
     <string name="toast_facebook_auth_success">Facebook authentication is successful</string>
     <string name="toast_facebook_auth_fail">Error was occurred during Facebook authentication</string>

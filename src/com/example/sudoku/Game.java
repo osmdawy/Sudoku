@@ -1,11 +1,17 @@
 package com.example.sudoku;
 
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,19 +20,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Game extends Activity {
 	private static final String TAG = "Sudoku";
 
 	public static final String KEY_DIFFICULTY = "com.example.sudoku.difficulty";
+	public static final String NoOfRounds = "com.example.sudoku.norounds";
 	public static int DIFFICULTY = 0;
 
 	public static final int DIFFICULTY_EASY = 0;
 	public static final int DIFFICULTY_MEDIUM = 1;
 	public static final int DIFFICULTY_HARD = 2;
-	public static final String CONTINUE = "com.example.sudoku.continue";
 
 	public static int[] originalPuzzle;
 	public static int puzzle[];
@@ -36,7 +42,21 @@ public class Game extends Activity {
 
 	private PuzzleView puzzleView;
 
+	/**Sounds
+	 * 
+	 */
+	static private SoundPool sounds;
+	static private int right;
+	static private int wrong;
+	static private int loseSound;
+	static private int winSound;
+	static private int Tie;
+	static private int endOfRound;
+	static private int hurry;
+	boolean hurryPlayed=false;
 	boolean initialized = false;
+	// Layout Views
+//    private TextView mTitle;
 	/*
 	 * Bluetooth Attributes
 	 */
@@ -69,21 +89,34 @@ public class Game extends Activity {
 
 	int score = 0;
 	int oppScore = 0;
-	
-	boolean admin=false;
+
+	boolean admin = false;
+
+	int noOfRounds;
+
+	// Timer
+	long initialTimer;
+	long currentTimer;
+
+	TimerThread myTimer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		 // Set up the custom title
+      
+		if (new_game ) {
+			//
+			noOfRounds = getIntent().getIntExtra(NoOfRounds, noOfRounds);
 
-		if (new_game || puzzle == null) {
 			puzzle = new int[9 * 9];
 			originalPuzzle = new int[9 * 9];
-			boolean continueGame = false;
-			continueGame = getIntent().getBooleanExtra(CONTINUE, continueGame);
 			DIFFICULTY = getIntent().getIntExtra(KEY_DIFFICULTY, DIFFICULTY);
 			Log.d("amira", "" + DIFFICULTY);
 			setNoHiddenTiles();
-			if (!continueGame) {
+			
+
 				// generate sudoku
 				Logic l = new Logic();
 				arr = l.save();
@@ -106,6 +139,7 @@ public class Game extends Activity {
 				super.onCreate(savedInstanceState);
 				Log.d(TAG, "onCreate");
 				puzzleView = new PuzzleView(this);
+				puzzleView.noOfRounds = noOfRounds;
 				setContentView(puzzleView);
 				puzzleView.requestFocus();
 				Sudoku.puzzle = puzzle;
@@ -113,17 +147,34 @@ public class Game extends Activity {
 				Sudoku.arr = arr;
 				Sudoku.difficulty = DIFFICULTY;
 				Sudoku.solved_tiles = solving_tiles;
-			} else {
-				puzzle = Sudoku.puzzle;
-				arr = Sudoku.arr;
-				DIFFICULTY = Sudoku.difficulty;
-				solving_tiles = Sudoku.solved_tiles;
-				super.onCreate(savedInstanceState);
-				Log.d(TAG, toPuzzleString(originalPuzzle));
-				puzzleView = new PuzzleView(this);
-				setContentView(puzzleView);
-				puzzleView.requestFocus();
-			}
+
+//				  mTitle = (TextView) findViewById(R.id.title_left_text);
+//			        mTitle.setText(R.string.app_name);
+//			        mTitle = (TextView) findViewById(R.id.title_right_text);
+				// If the adapter is null, then Bluetooth is not supported
+				if (mBluetoothAdapter == null) {
+					Toast.makeText(this, "Bluetooth is not available",
+							Toast.LENGTH_LONG).show();
+					finish();
+					return;
+				}
+				if (mChatService == null) {
+					setupChat();
+				}
+				
+				// sounds
+				sounds = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+				right = sounds.load(this, R.raw.pcmouseclick1, 1);
+				wrong = sounds.load(this, R.raw.doh, 1);
+				Tie = sounds.load(this, R.raw.finish, 1);
+				winSound = sounds.load(this, R.raw.win, 1);
+				loseSound = sounds.load(this, R.raw.lose, 1);
+				endOfRound = sounds.load(this, R.raw.round, 1);
+//				hurry=sounds.load(this, R.raw.hurry, 1);
+				initializeTimer();
+			
+
+			
 		} else {
 			super.onCreate(savedInstanceState);
 			Log.d(TAG, "onCreate");
@@ -136,15 +187,15 @@ public class Game extends Activity {
 		}
 		new_game = false;
 		// Get local Bluetooth adapter
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-		// If the adapter is null, then Bluetooth is not supported
-		if (mBluetoothAdapter == null) {
-			Toast.makeText(this, "Bluetooth is not available",
-					Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
+		// mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		//
+		// // If the adapter is null, then Bluetooth is not supported
+		// if (mBluetoothAdapter == null) {
+		// Toast.makeText(this, "Bluetooth is not available",
+		// Toast.LENGTH_LONG).show();
+		// finish();
+		// return;
+		// }
 
 	}
 
@@ -163,8 +214,10 @@ public class Game extends Activity {
 				setupChat();
 			}
 		}
+//		sounds.play(endOfRound, 1.0f,1.0f, 0, 0, 1.5f);
 	}
 
+	
 	@Override
 	public synchronized void onResume() {
 		super.onResume();
@@ -180,6 +233,8 @@ public class Game extends Activity {
 				// Start the Bluetooth chat services
 				mChatService.start();
 			}
+		}else{
+			setupChat();
 		}
 	}
 
@@ -219,7 +274,7 @@ public class Game extends Activity {
 
 		// Initialize the buffer for outgoing messages
 		mOutStringBuffer = new StringBuffer("");
-		sendMessage(encodeMsgToSend());
+		sendMessage(encodeMsgToSend(false));
 	}
 
 	protected void showKeypadOrError(int x, int y) {
@@ -238,7 +293,9 @@ public class Game extends Activity {
 
 	protected boolean setTileIfValid(int x, int y, int value) {
 		if (isvalid(x, y, value)) {
-			score++;
+			sounds.play(right, 1.0f,
+					1.0f, 0, 0, 1.5f);
+			score=score+DIFFICULTY+1;
 			puzzleView.score = score;
 			puzzleView.invalidate();
 			setTile(x, y, value);
@@ -246,7 +303,9 @@ public class Game extends Activity {
 
 			return true;
 		} else {
-			score--;
+			sounds.play(wrong, 1.0f,
+					1.0f, 0, 0, 1.5f);
+			score=score-(DIFFICULTY+1);
 			puzzleView.score = score;
 			puzzleView.invalidate();
 			String scoremsg = "s " + score;
@@ -292,11 +351,86 @@ public class Game extends Activity {
 		solving_tiles--;
 		Sudoku.puzzle = puzzle;
 		// send the current puzzle to opponent
-		sendMessage(encodeMsgToSend());
+		sendMessage(encodeMsgToSend(false));
+		if (solving_tiles == 0) {
+			if(myTimer!=null){
+			myTimer.cancel();
+			}
+			if (noOfRounds <= 1) {
+				
+				if(score==oppScore){
+					Intent intent = new Intent(Game.this, Sudoku.class);
+					startActivity(intent);
+					sounds.play(Tie, 1.0f,
+							1.0f, 0, 0, 1.5f);
+//					sounds.autoPause();
+				}else if(oppScore>score){
+					Intent intent = new Intent(Game.this, Sudoku.class);
+					startActivity(intent);
+					sounds.play(loseSound, 1.0f,
+							1.0f, 0, 0, 1.5f);
+//					sounds.autoPause();
+				}else if (score > oppScore) {
+					sounds.play(winSound, 1.0f,
+							1.0f, 0, 0, 1.5f);
+					Intent intent = new Intent(Game.this, HomeActivity.class);
+					intent.putExtra("score", score);
+					startActivity(intent);
+//					sounds.autoPause();
+				}
+			} else {
+				reInit();
+				noOfRounds--;
+				
+				puzzleView.noOfRounds = noOfRounds;
+				// if (admin) {
+				sendMessage(encodeMsgToSend(true));
+				// sendMessage("n " + noOfRounds);
+
+				// }
+
+			}
+		}
 
 	}
 
-	private String encodeMsgToSend() {
+	private void reInit() {
+		//
+		// myTimer = new TimerThread();
+		// myTimer.run();
+
+		Logic l = new Logic();
+		arr = l.save();
+		Log.d("solving array ", tostring(arr));
+		int[][] hide;
+		hide = l.hide(DIFFICULTY);
+		// convert it to 1D array
+		for (int i = 0; i < hide.length; i++) {
+			for (int j = 0; j < hide.length; j++) {
+				puzzle[j * 9 + i] = hide[j][i];
+			}
+		}
+		for (int i = 0; i < puzzle.length; i++) {
+			originalPuzzle[i] = puzzle[i];
+		}
+		setNoHiddenTiles();
+		puzzleView = new PuzzleView(this);
+		setContentView(puzzleView);
+		puzzleView.requestFocus();
+		puzzleView.invalidate();
+		puzzleView.score = score;
+		puzzleView.oppScore = oppScore;
+		Sudoku.puzzle = puzzle;
+		Sudoku.original_puzzle = originalPuzzle;
+		Sudoku.arr = arr;
+		Sudoku.difficulty = DIFFICULTY;
+		Sudoku.solved_tiles = solving_tiles;
+		puzzleView.noOfRounds = noOfRounds;
+		initializeTimer();
+
+	}
+
+	private String encodeMsgToSend(boolean initTimer) {
 		String msg = "";
 		// put puzzle
 		msg = toPuzzleString(puzzle);
@@ -310,11 +444,17 @@ public class Game extends Activity {
 
 		// score
 		msg = msg + " " + score;
+		// number of tiles
+		msg = msg + " " + solving_tiles;
+		// no of rounds
+		msg = msg + " " + noOfRounds;
+		// // initial timer
+		msg = msg + " " + initTimer;
+
 		return msg;
 	}
 
 	private void decodeMsgReceieved(String msg) {
-
 		if (msg.charAt(0) == 's') {
 
 			Log.d("Score", msg);
@@ -334,6 +474,27 @@ public class Game extends Activity {
 			oppScore = Integer.parseInt(result[3]);
 			Log.d("OppS", oppScore + "");
 			puzzleView.oppScore = oppScore;
+
+			solving_tiles = Integer.parseInt(result[4]);
+
+			noOfRounds = Integer.parseInt(result[5]);
+			puzzleView.noOfRounds = noOfRounds;
+			String initTimer = result[6];
+
+			if (initTimer.equals("true")) {
+				initializeTimer();
+			}
+			// initialTimer = Long.parseLong(result[6]);
+			if (solving_tiles == 0) {
+				if (noOfRounds == 1) {
+					
+					if (score == oppScore || oppScore > score) {
+						Intent intent = new Intent(Game.this, Sudoku.class);
+						startActivity(intent);
+						Log.d("Check", "yessss");
+					}
+				}
+			}
 			puzzleView.invalidate();
 		}
 	}
@@ -360,6 +521,7 @@ public class Game extends Activity {
 	}
 
 	protected String getTileString(int x, int y) {
+
 		int v = getTile(x, y);
 		if (v == 0)
 			return "";
@@ -404,14 +566,14 @@ public class Game extends Activity {
 		Intent serverIntent = null;
 		switch (item.getItemId()) {
 		case R.id.secure_connect_scan:
-			admin=true;
+			admin = true;
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
-			
+
 			return true;
 		case R.id.insecure_connect_scan:
-			admin=true;
+			admin = true;
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent,
@@ -444,7 +606,8 @@ public class Game extends Activity {
 	private void sendMessage(String message) {
 		// Check that we're actually connected before trying anything
 		if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-			Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
+//			mTitle.setText("Not connected");
 			return;
 		}
 
@@ -471,6 +634,32 @@ public class Game extends Activity {
 		}
 	}
 
+	private void initializeTimer() {
+
+		
+		initialTimer = System.currentTimeMillis();
+		currentTimer = System.currentTimeMillis();
+		if (myTimer != null) {
+			myTimer.cancel();
+		}
+		if (DIFFICULTY == DIFFICULTY_EASY) {
+
+			// TODO: change this initialization
+			// initialize this for each diffucilty
+			myTimer = new TimerThread(60 * 1000, 1000);
+			//
+
+		} else if (DIFFICULTY == DIFFICULTY_MEDIUM) {
+			myTimer = new TimerThread(600 * 1000, 1000);
+		} else if (DIFFICULTY == DIFFICULTY_HARD) {
+			myTimer = new TimerThread(900000, 1000);
+		}
+
+		myTimer.onTick(100);
+
+		myTimer.start();
+	}
+
 	// The Handler that gets information back from the BluetoothChatService
 	private final Handler mHandler = new Handler() {
 		@Override
@@ -480,26 +669,33 @@ public class Game extends Activity {
 
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
+//					 mTitle.setText("Connected to");
+//	                    mTitle.append(mConnectedDeviceName);
 					// mTitle.setText(R.string.title_connected_to);
 					// mTitle.append(mConnectedDeviceName);
 					// mConversationArrayAdapter.clear();
-					if (!initialized && admin) {
+					if (!initialized) {
+						initializeTimer();
+						if (admin) {
+							initialTimer = System.currentTimeMillis();
+							// sendMessage(encodeMsgToSend());
+							mChatService.write(encodeMsgToSend(false)
+									.getBytes());
 
-						// sendMessage(encodeMsgToSend());
-						mChatService.write(encodeMsgToSend().getBytes());
-
-						// Reset out string buffer to zero and clear the edit
-						// text field
-						mOutStringBuffer.setLength(0);
+							// Reset out string buffer to zero and clear the
+							// edit
+							mOutStringBuffer.setLength(0);
+						}
 						initialized = true;
 					}
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					// mTitle.setText(R.string.title_connecting);
+//					 mTitle.setText("Connecting");
 					break;
 				case BluetoothChatService.STATE_LISTEN:
 				case BluetoothChatService.STATE_NONE:
-					// mTitle.setText(R.string.title_not_connected);
+//					 mTitle.setText("not connected");
 					break;
 				}
 				break;
@@ -527,6 +723,7 @@ public class Game extends Activity {
 						"Connected to " + mConnectedDeviceName,
 						Toast.LENGTH_SHORT).show();
 				puzzleView.oppDeviceName = mConnectedDeviceName;
+				puzzleView.invalidate();
 
 				break;
 			case MESSAGE_TOAST:
@@ -536,6 +733,120 @@ public class Game extends Activity {
 				break;
 			}
 		}
+	};
+
+	class TimerThread extends CountDownTimer {
+		public TimerThread(long millisInFuture, long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+			// TODO Auto-generated constructor stub
+			initialTimer=System.currentTimeMillis();
+//			sounds.play(endOfRound, 1.0f,
+//					1.0f, 0, 0, 1.5f);
+		}
+
+		private String getCurrentTime() {
+			long noOfSecondsPassed = (currentTimer - initialTimer) / 1000;
+			int mins = (int) (noOfSecondsPassed / 60);
+			int seconds = (int) (noOfSecondsPassed % 60);
+			String minutes=mins+"";
+			String secs=seconds+"";
+			if(mins<10){
+				minutes="0"+mins;
+			}
+			if(seconds<10){
+				secs="0"+seconds;
+			}
+			String timer = "Time " + minutes + ":" + secs;
+			return timer;
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			
+			
+			
+		 
+				if (noOfRounds <= 1) {
+				
+//					sounds.autoPause();
+					if (score > oppScore) {
+						Toast.makeText(Game.this, "You Won", Toast.LENGTH_SHORT)
+								.show();
+					} else if (oppScore > score) {
+						Toast.makeText(Game.this, "You Lost",
+								Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(Game.this, "Tie", Toast.LENGTH_SHORT)
+								.show();
+
+					}
+
+					Intent intent = new Intent(Game.this, Sudoku.class);
+//					intent.putExtra("score", score);
+					startActivity(intent);
+
+				}else{
+				reInit();
+				noOfRounds--;
+
+				puzzleView.noOfRounds = noOfRounds;
+		
+				}
+
+				if (admin) {
+					
+					
+					// if (admin) {
+					sendMessage(encodeMsgToSend(true));
+					// sendMessage("n " + noOfRounds);
+
+					// }
+					
+				} 
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			// TODO Auto-generated method stub
+			currentTimer = System.currentTimeMillis();
+			boolean red = false;
+			
+			int left = (int) ((currentTimer - initialTimer) / 1000);
+			if (DIFFICULTY == DIFFICULTY_EASY) {
+
+				
+				if ((60 - left) < 10) {
+					hurryPlayed=true;
+					red = true;
+				}
+			} else if (DIFFICULTY == DIFFICULTY_MEDIUM) {
+				
+				if ((60 * 10 - left) < 60) {
+					hurryPlayed=true;
+					red = true;
+				}
+			} else if (DIFFICULTY == DIFFICULTY_HARD) {
+				
+				if ((60 * 15 - left) < 60) {
+					hurryPlayed=true;
+					red = true;
+				}
+			}
+
+			if(hurryPlayed){
+//				sounds.play(hurry, 1.0f,
+//						1.0f, 0, 0, 1.5f);
+				hurryPlayed=false;
+			}
+			if (red) {
+				setTitleColor(Color.RED);
+			}else{
+				setTitleColor(Color.WHITE);
+			}
+			setTitle(getCurrentTime());
+		}
+
 	};
 
 }

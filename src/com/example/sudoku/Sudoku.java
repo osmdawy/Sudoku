@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class Sudoku extends Activity implements OnClickListener {
@@ -26,11 +28,11 @@ public class Sudoku extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		setContentView(R.layout.main);
 
 		// Set up click listeners for all the buttons
-		View continueButton = findViewById(R.id.continue_button);
-		continueButton.setOnClickListener(this);
+	
 		View newButton = findViewById(R.id.new_button);
 		newButton.setOnClickListener(this);
 		View aboutButton = findViewById(R.id.about_button);
@@ -49,11 +51,6 @@ public class Sudoku extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// switch (item.getItemId()) {
-		// case R.id.settings:
-		// startActivity(new Intent(this, Prefs.class));
-		// return true;
-		// }
 		return false;
 	}
 
@@ -69,9 +66,7 @@ public class Sudoku extends Activity implements OnClickListener {
 		case R.id.exit_button:
 			finish();
 			break;
-		case R.id.continue_button:
-			conitnueGame();
-			break;
+	
 		}
 	}
 
@@ -91,18 +86,15 @@ public class Sudoku extends Activity implements OnClickListener {
 		Log.d(TAG, "clicked on " + i);
 		intent = new Intent(Sudoku.this, Game.class);
 		intent.putExtra(Game.KEY_DIFFICULTY, i);
-		intent.putExtra(Game.CONTINUE, false);
+		
+		EditText myText = (EditText)findViewById(R.id.editText1);
+		intent.putExtra(Game.NoOfRounds, Integer.parseInt(myText.getText().toString()));
 		Game.new_game = true;
+		
 		startActivity(intent);
 
 	}
 
-	private void conitnueGame() {
-		if (intent != null) {
-			intent.putExtra(Game.CONTINUE, true);
-			startActivity(intent);
-		}else{
-			   Toast.makeText(getApplicationContext(), "No previous game",
-                       Toast.LENGTH_SHORT).show();		}
-	}
+	
+	
 }
